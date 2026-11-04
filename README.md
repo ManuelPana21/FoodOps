@@ -278,3 +278,4 @@ Seguimos la convención de [Conventional Commits](https://www.conventionalcommit
 - `docs(...)`: Actualizaciones en documentación o README.
 - `refactor(...)`: Reestructuración de código sin alterar comportamiento.
 - `chore(...)`: Tareas de mantenimiento o configuración.
+

@@ -55,3 +55,4 @@ INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) V
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) VALUES
 (104, 1, 2, 6.50, 13.00),
 (104, 5, 1, 1.50, 1.50);
+

@@ -18,3 +18,4 @@ export interface OrderSubmissionPayload {
   items: Array<{ productId: number; quantity: number }>;
   note?: string;
 }
+

@@ -36,3 +36,4 @@ dist-ssr
 database/*.db
 database/*.sqlite
 database/*.sqlite3
+

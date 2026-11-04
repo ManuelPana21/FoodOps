@@ -13,3 +13,4 @@ export type ProductCategory =
   | 'Platos Fuertes'
   | 'Bebidas'
   | 'Postres';
+
