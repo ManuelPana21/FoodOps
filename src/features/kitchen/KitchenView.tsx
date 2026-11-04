@@ -35,10 +35,11 @@ const initialTickets: KitchenTicket[] = [
 ];
 
 interface KitchenViewProps {
-  onOrders: () => void;
+  onOrders?: () => void;
+  onLogout?: () => void;
 }
 
-export function KitchenView({ onOrders }: KitchenViewProps) {
+export function KitchenView({ onOrders = () => {}, onLogout }: KitchenViewProps) {
   const [tickets, setTickets] = useState<KitchenTicket[]>(initialTickets);
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -58,7 +59,11 @@ export function KitchenView({ onOrders }: KitchenViewProps) {
 
   return (
     <div className="kds-shell">
-      <KitchenHeader currentTime={currentTime} onOrders={onOrders} />
+      <KitchenHeader
+        currentTime={currentTime}
+        onOrders={onOrders}
+        onLogout={onLogout}
+      />
 
       <main className="kds-main">
         <div className="kds-overview">

@@ -75,11 +75,16 @@ const categories: ProductCategory[] = [
 ];
 
 interface OrderViewProps {
-  onKitchen: () => void;
+  onKitchen?: () => void;
+  onLogout?: () => void;
   onSendOrderSuccess?: (itemsCount: number, total: number) => void;
 }
 
-export function OrderView({ onKitchen, onSendOrderSuccess }: OrderViewProps) {
+export function OrderView({
+  onKitchen = () => {},
+  onLogout,
+  onSendOrderSuccess,
+}: OrderViewProps) {
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("Todos");
   const [cart, setCart] = useState<CartState>({ 1: 1, 2: 1, 5: 1 });
   const [modalOpen, setModalOpen] = useState(false);
@@ -132,7 +137,7 @@ export function OrderView({ onKitchen, onSendOrderSuccess }: OrderViewProps) {
 
   return (
     <div className="order-shell">
-      <OrderHeader onKitchen={onKitchen} />
+      <OrderHeader onKitchen={onKitchen} onLogout={onLogout} />
 
       <main className="order-main">
         <section className="catalog" aria-label="Catálogo de productos">

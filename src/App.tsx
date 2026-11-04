@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { OrderView } from "./features/orders/OrderView";
 import { KitchenView } from "./features/kitchen/KitchenView";
-
-export type ActiveScreen = "orders" | "kitchen";
+import { getActiveRole, logout, ROLE_HOME } from "./services/auth";
 
 /** Redirige la raíz (y rutas desconocidas) según el rol activo. */
 function HomeRedirect() {
@@ -11,7 +12,7 @@ function HomeRedirect() {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<ActiveScreen>("orders");
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
@@ -25,7 +26,10 @@ export default function App() {
         path="/comandas"
         element={
           <ProtectedRoute allowedRole="Mesero">
-            <OrderView onLogout={handleLogout} />
+            <OrderView
+              onKitchen={() => navigate("/cocina")}
+              onLogout={handleLogout}
+            />
           </ProtectedRoute>
         }
       />
@@ -33,7 +37,10 @@ export default function App() {
         path="/cocina"
         element={
           <ProtectedRoute allowedRole="Cocinero">
-            <KitchenView onLogout={handleLogout} />
+            <KitchenView
+              onOrders={() => navigate("/comandas")}
+              onLogout={handleLogout}
+            />
           </ProtectedRoute>
         }
       />

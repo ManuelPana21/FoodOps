@@ -3,13 +3,15 @@ import { Button } from "../common/Button";
 import { Icon } from "../common/Icon";
 
 interface OrderHeaderProps {
-  onKitchen: () => void;
+  onKitchen?: () => void;
+  onLogout?: () => void;
   serverName?: string;
   serverInitials?: string;
 }
 
 export function OrderHeader({
   onKitchen,
+  onLogout,
   serverName = "Manuel Panameño",
   serverInitials = "MP",
 }: OrderHeaderProps) {
@@ -31,14 +33,27 @@ export function OrderHeader({
           <Icon name="chevron" size={18} />
         </div>
 
-        <Button
-          className="kitchen-shortcut"
-          label="Ir a pantalla de cocina"
-          onClick={onKitchen}
-        >
-          <Icon name="chef" />
-          <span>Cocina</span>
-        </Button>
+        {onKitchen && (
+          <Button
+            className="kitchen-shortcut"
+            label="Ir a pantalla de cocina"
+            onClick={onKitchen}
+          >
+            <Icon name="chef" />
+            <span>Cocina</span>
+          </Button>
+        )}
+
+        {onLogout && (
+          <Button
+            className="logout-shortcut"
+            label="Cerrar sesión"
+            onClick={onLogout}
+          >
+            <Icon name="x" />
+            <span>Salir</span>
+          </Button>
+        )}
       </div>
     </header>
   );
