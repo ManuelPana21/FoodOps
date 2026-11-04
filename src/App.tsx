@@ -3,7 +3,9 @@ import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { OrderView } from "./features/orders/OrderView";
 import { KitchenView } from "./features/kitchen/KitchenView";
-import { getActiveRole, logout, ROLE_HOME } from "./services/auth";
+import { getActiveRole, logout, ROLE_HOME, switchRole } from "./services/auth";
+
+export type ActiveScreen = "orders" | "kitchen";
 
 /** Redirige la raíz (y rutas desconocidas) según el rol activo. */
 function HomeRedirect() {
@@ -19,6 +21,16 @@ export default function App() {
     navigate("/login", { replace: true });
   };
 
+  const handleGoToKitchen = () => {
+    switchRole("Cocinero");
+    navigate("/cocina");
+  };
+
+  const handleGoToOrders = () => {
+    switchRole("Mesero");
+    navigate("/comandas");
+  };
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -27,7 +39,7 @@ export default function App() {
         element={
           <ProtectedRoute allowedRole="Mesero">
             <OrderView
-              onKitchen={() => navigate("/cocina")}
+              onKitchen={handleGoToKitchen}
               onLogout={handleLogout}
             />
           </ProtectedRoute>
@@ -38,7 +50,7 @@ export default function App() {
         element={
           <ProtectedRoute allowedRole="Cocinero">
             <KitchenView
-              onOrders={() => navigate("/comandas")}
+              onOrders={handleGoToOrders}
               onLogout={handleLogout}
             />
           </ProtectedRoute>

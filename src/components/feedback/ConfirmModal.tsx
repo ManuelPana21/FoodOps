@@ -3,7 +3,6 @@ import { Button } from "../common/Button";
 import { Icon } from "../common/Icon";
 import type { Product } from "../../types/product";
 import type { CartState } from "../../types/order";
-import { formatCurrency } from "../../utils/formatters";
 
 interface ConfirmModalProps {
   items: Product[];
@@ -45,10 +44,9 @@ export function ConfirmModal({
           </div>
           <div className="modal-subtitle">
             Revisa el pedido antes de enviarlo. Una vez confirmado, aparecerá
-            inmediatamente en la cola de preparación de cocina.
+            inmediatamente en cocina.
           </div>
         </div>
-
         <div className="modal-order">
           <div className="modal-order-label">
             <span>Resumen · Mesa 08</span>
@@ -59,15 +57,14 @@ export function ConfirmModal({
               <span>
                 <strong>{quantities[item.id]}×</strong> {item.name}
               </span>
-              <strong>{formatCurrency(item.price * quantities[item.id])}</strong>
+              <strong>${(item.price * quantities[item.id]).toFixed(2)}</strong>
             </div>
           ))}
           <div className="modal-total">
             <span>Total</span>
-            <strong>{formatCurrency(total)}</strong>
+            <strong>${total.toFixed(2)}</strong>
           </div>
         </div>
-
         <div className="modal-actions">
           <Button className="cancel-button" onClick={onCancel}>
             Cancelar

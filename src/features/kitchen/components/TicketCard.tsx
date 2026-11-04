@@ -8,22 +8,9 @@ interface TicketCardProps {
 }
 
 export function TicketCard({ ticket, onUpdateStatus }: TicketCardProps) {
-  const isPending = ticket.status === "pending";
-  const isProgress = ticket.status === "progress";
-
-  const nextStatus: TicketStatus = isPending ? "progress" : "done";
-  const actionLabel = isPending
-    ? "Comenzar Preparación"
-    : "Marcar como Completado";
-  const actionIcon = isPending ? "chef" : "check";
-
   return (
-    <article
-      className={`ticket-card ticket-${ticket.status}`}
-      aria-label={`Comanda ${ticket.table} - Pedido #${ticket.id}`}
-    >
+    <article className={`ticket-card ticket-${ticket.status}`}>
       <div className="ticket-status-strip" />
-
       <div className="ticket-header">
         <div>
           <span>{ticket.table}</span>
@@ -31,37 +18,39 @@ export function TicketCard({ ticket, onUpdateStatus }: TicketCardProps) {
         </div>
         <div className="ticket-age">
           <Icon name="clock" size={17} />
-          <span>{ticket.age}</span>
+          {ticket.age}
         </div>
       </div>
-
       <div className="ticket-meta">
         <span>Mesero: {ticket.server}</span>
         <span className={`status-label status-${ticket.status}`}>
-          {isPending ? "PENDIENTE" : isProgress ? "EN PREPARACIÓN" : "COMPLETADO"}
+          {ticket.status === "pending" ? "PENDIENTE" : "EN PREPARACIÓN"}
         </span>
       </div>
-
       <div className="ticket-items">
-        {ticket.items.map((item, index) => (
-          <div key={`${ticket.id}-item-${index}`}>{item}</div>
+        {ticket.items.map((item) => (
+          <div key={item}>{item}</div>
         ))}
       </div>
-
       {ticket.note && (
         <div className="ticket-note">
           <span>NOTA</span>
           <strong>{ticket.note}</strong>
         </div>
       )}
-
       <Button
         className={`ticket-action action-${ticket.status}`}
-        icon={actionIcon}
-        label={`${actionLabel} para pedido #${ticket.id}`}
-        onClick={() => onUpdateStatus(ticket.id, nextStatus)}
+        onClick={() =>
+          onUpdateStatus(
+            ticket.id,
+            ticket.status === "pending" ? "progress" : "done",
+          )
+        }
       >
-        <span>{actionLabel}</span>
+        <Icon name={ticket.status === "pending" ? "chef" : "check"} />
+        {ticket.status === "pending"
+          ? "Comenzar Preparación"
+          : "Marcar como Completado"}
       </Button>
     </article>
   );

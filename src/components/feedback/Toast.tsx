@@ -17,12 +17,7 @@ export function Toast({ title, message, onClose }: ToastProps) {
         <strong>{title}</strong>
         <span>{message}</span>
       </div>
-      <Button
-        className="toast-close"
-        icon="x"
-        label="Cerrar notificación"
-        onClick={onClose}
-      />
+      <Button icon="x" label="Cerrar" onClick={onClose} />
     </div>
   );
 }

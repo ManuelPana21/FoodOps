@@ -63,6 +63,15 @@ export function login(username: string, password: string): MockUser | null {
   return user;
 }
 
+/** Cambia rápidamente el rol activo para navegar entre Mesero y Cocina. */
+export function switchRole(role: Role): void {
+  const targetUser = MOCK_USERS.find((u) => u.role === role);
+  sessionStorage.setItem(ROLE_STORAGE_KEY, role);
+  if (targetUser && !sessionStorage.getItem(USER_STORAGE_KEY)) {
+    sessionStorage.setItem(USER_STORAGE_KEY, targetUser.name);
+  }
+}
+
 /** Elimina la sesión activa. */
 export function logout(): void {
   sessionStorage.removeItem(ROLE_STORAGE_KEY);
