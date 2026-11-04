@@ -1216,6 +1216,157 @@
   }
 }
 
+/* ---------- Login ---------- */
+.login-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(30, 64, 175, 0.1), transparent 28rem),
+    radial-gradient(circle at 100% 100%, rgba(217, 119, 6, 0.08), transparent 24rem),
+    #f6f7fb;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.25rem;
+  background: white;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  animation: modal-in 220ms ease-out;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.login-title {
+  margin-top: 1.75rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.login-subtitle {
+  margin-top: 0.35rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.login-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.login-field span {
+  color: #374151;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.login-field input {
+  min-height: 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0 0.9rem;
+  font-size: 1rem;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.login-field input:focus {
+  border-color: #1e40af;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.15);
+}
+
+.login-error {
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  background: #fef2f2;
+  padding: 0.7rem 0.9rem;
+  color: #b91c1c;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.login-submit {
+  width: 100%;
+  background: #1e40af;
+  color: white;
+  box-shadow: 0 8px 20px rgba(30, 64, 175, 0.22);
+}
+
+.login-submit:hover {
+  background: #1d3a9e;
+}
+
+.login-demo {
+  margin-top: 1.75rem;
+  border-top: 1px solid #f1f2f4;
+  padding-top: 1.25rem;
+}
+
+.login-demo > span {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-demo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.login-demo-button {
+  flex-direction: column;
+  gap: 0.1rem;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  padding: 0.6rem;
+}
+
+.login-demo-button:hover {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
+
+.login-demo-button strong {
+  font-size: 0.9rem;
+}
+
+.login-demo-button small {
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+@media (max-width: 400px) {
+  .login-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .login-demo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 1180px) {
   .products-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
