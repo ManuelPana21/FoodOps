@@ -14,7 +14,11 @@ if sys.platform == "win32":
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "foodops.db")
 SCHEMA_PATH = os.path.join(BASE_DIR, "schema.sql")
-SEED_PATH = os.path.join(BASE_DIR, "seed.sql")
+SEED_PATH = (
+    os.path.join(BASE_DIR, "seeds.sql")
+    if os.path.exists(os.path.join(BASE_DIR, "seeds.sql"))
+    else os.path.join(BASE_DIR, "seed.sql")
+)
 
 def initialize_database():
     print("[FoodOps Database] Iniciando aprovisionamiento en SQLite...")

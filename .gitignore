@@ -36,3 +36,15 @@ dist-ssr
 database/*.db
 database/*.sqlite
 database/*.sqlite3
+
+# Python cache & virtual environment
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+env/
+venv/
+
