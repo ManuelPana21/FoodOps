@@ -59,11 +59,12 @@ INSERT INTO order_items (id, order_id, product_id, quantity, unit_price, subtota
 (4, 102, 4, 1, 5.75, 5.75),
 (5, 102, 8, 2, 2.00, 4.00);
 
-<<<<<<< HEAD
+
 -- Pedido 104: 2x Hamburguesa Clásica ($13.00) + 1x Soda ($1.50) = $14.50
 INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) VALUES
 (104, 1, 2, 6.50, 13.00),
 (104, 5, 1, 1.50, 1.50);
+
 
 =======
 -- Detalle Pedido 103 (Estado 'done'): 1x Pasta Cremosa ($7.50) + 1x Soda ($1.50) + 1x Brownie Tibio ($3.50) = $12.50
@@ -71,4 +72,4 @@ INSERT INTO order_items (id, order_id, product_id, quantity, unit_price, subtota
 (6, 103, 3, 1, 7.50, 7.50),
 (7, 103, 5, 1, 1.50, 1.50),
 (8, 103, 6, 1, 3.50, 3.50);
->>>>>>> main
+

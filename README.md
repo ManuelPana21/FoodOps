@@ -21,6 +21,7 @@ FoodOps es una plataforma ágil diseñada para optimizar el flujo operativo en r
 
 ## 🛠 Arquitectura y Stack Tecnológico
 
+- **Backend:** [FastAPI](https://fastapi.tiangolo.com/) + [Pydantic v2](https://docs.pydantic.dev/) + [Uvicorn](https://www.uvicorn.org/)
 - **Frontend:** [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/) + [Vite](https://vitejs.dev/)
 - **Estilos:** CSS3 nativo moderno con variables de diseño (Design Tokens), arquitectura modular y soporte responsivo.
 - **Base de Datos:** [SQLite 3](https://www.sqlite.org/) (almacenamiento embebido, ACID, cero latencia de red, ideal para terminales locales).
@@ -98,6 +99,18 @@ FoodOps/
 ├── tsconfig.json                   # Configuración del compilador TypeScript
 ├── tsconfig.node.json              # Configuración de TypeScript para Vite
 ├── vite.config.ts                  # Configuración de plugins, puertos y alias Vite
+├── backend/                        # Backend API con FastAPI y Pydantic
+│   ├── main.py                     # Entrypoint de FastAPI y configuración de CORS
+│   ├── database.py                 # Conexión y sesión de base de datos SQLite
+│   ├── requirements.txt            # Dependencias Python del backend
+│   ├── schemas/                    # Schemas Pydantic (validación de pedidos y errores)
+│   │   ├── order.py                # Validación: al menos un item con cantidad > 0
+│   │   ├── product.py              # Schema de catálogo de productos
+│   │   └── error.py                # Schema estándar de error HTTP
+│   ├── middleware/                 # Middlewares ASGI y manejadores de error
+│   │   └── error_handler.py        # Handlers estándar para 400, 404, 422, 500
+│   ├── routers/                    # Endpoints modulares (orders, products, test)
+│   └── tests/                      # Suite de pruebas con pytest (19 tests)
 ├── database/                       # Capa de datos y persistencia SQLite
 │   ├── foodops.db                  # Base de datos SQLite (generada al ejecutar seed)
 │   ├── init_db.py                  # Script automatizado de creación y poblado
@@ -266,7 +279,43 @@ npm run dev        # Inicia el entorno local de desarrollo con recarga rápida (
 npm run build      # Compila y optimiza el frontend para producción
 npm run preview    # Previsualiza la compilación de producción localmente
 npm run db:seed    # Re-crea la base de datos SQLite y carga las semillas iniciales
+npm run api:dev    # Inicia el backend FastAPI (puerto 4000) con recarga automática
+npm run api:test   # Ejecuta la suite de pruebas unitarias y de integración (pytest)
 ```
+
+---
+
+## 🛡️ Validación de Pedidos y Middleware de Errores HTTP
+
+### 1. Validación de Pedidos con Pydantic (`OrderCreate` & `OrderItemCreate`)
+El backend valida estrictamente mediante Pydantic que:
+- **Al menos un item:** Todo pedido debe contener al menos un item (`items` no vacío).
+- **Cantidad mayor a 0:** Todo item dentro del pedido debe tener una cantidad estrictamente mayor a 0 (`quantity > 0`). Cantidades iguales a 0 o negativas son rechazadas.
+- **Identificación:** Requiere número de mesa no vacío y mesero válido.
+
+### 2. Middleware y Respuestas Estándar JSON (Códigos 400, 404, 422, 500)
+El middleware ASGI `HTTPErrorHandlingMiddleware` y los manejadores de excepciones unifican todas las respuestas de error en un formato JSON estándar:
+
+```json
+{
+  "status": "error",
+  "code": 422,
+  "message": "Error de validación en los datos del pedido o solicitud",
+  "detail": "Error de validación en los datos del pedido o solicitud",
+  "details": [
+    {
+      "field": "items",
+      "message": "El pedido debe contener al menos un item con cantidad mayor a 0.",
+      "type": "value_error"
+    }
+  ]
+}
+```
+
+- **400 Bad Request:** Solicitudes mal formadas o referencias inválidas (ej. mesero no registrado).
+- **404 Not Found:** Rutas no existentes o entidades ausentes (ej. producto o pedido inexistente).
+- **422 Unprocessable Entity:** Falla de validación en los schemas Pydantic.
+- **500 Internal Server Error:** Excepciones no controladas atrapadas por el middleware.
 
 ---
 
@@ -278,3 +327,4 @@ Seguimos la convención de [Conventional Commits](https://www.conventionalcommit
 - `docs(...)`: Actualizaciones en documentación o README.
 - `refactor(...)`: Reestructuración de código sin alterar comportamiento.
 - `chore(...)`: Tareas de mantenimiento o configuración.
+
