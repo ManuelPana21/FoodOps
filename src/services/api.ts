@@ -1,3 +1,5 @@
+import type { OrderSubmissionPayload } from '../types/order';
+
 /**
  * FoodOps API Client & Configuration
  */
@@ -14,6 +16,18 @@ export const apiClient = {
     if (!res.ok) throw new Error('Error al cargar cola de cocina');
     return res.json();
   },
+  async createOrder(payload: OrderSubmissionPayload) {
+    const res = await fetch(`${API_BASE_URL}/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.detail || 'Error al registrar pedido');
+    }
+    return res.json();
+  },
   async updateTicketStatus(id: number, status: 'progress' | 'done') {
     const res = await fetch(`${API_BASE_URL}/orders/${id}/status`, {
       method: 'PATCH',
@@ -24,4 +38,3 @@ export const apiClient = {
     return res.json();
   },
 };
-
