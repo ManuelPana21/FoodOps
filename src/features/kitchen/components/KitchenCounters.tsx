@@ -8,23 +8,19 @@ export function KitchenCounters({
   progressCount,
 }: KitchenCountersProps) {
   return (
-    <div className="kds-counters" role="region" aria-label="Contadores de cocina">
-      <div className="counter counter-pending" aria-label={`${pendingCount} órdenes pendientes`}>
+    <div className="kds-counters">
+      <div className="counter counter-pending">
         <span>{pendingCount}</span>
         <div>
           <strong>Pendientes</strong>
           <small>Por comenzar</small>
         </div>
       </div>
-
-      <div
-        className="counter counter-progress"
-        aria-label={`${progressCount} órdenes en preparación`}
-      >
-        <span className="counter-progress-badge">{progressCount}</span>
+      <div className="counter counter-progress">
+        <span>{progressCount}</span>
         <div>
-          <strong className="text-amber-500">En preparación</strong>
-          <small>En proceso culinario</small>
+          <strong>En preparación</strong>
+          <small>En cocina</small>
         </div>
       </div>
     </div>

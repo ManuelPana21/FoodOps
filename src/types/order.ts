@@ -7,7 +7,7 @@ export interface KitchenTicket {
   age: string;
   status: TicketStatus;
   items: string[];
-  note: string;
+  note: string | null;
 }
 
 export type CartState = Record<number, number>;
@@ -18,4 +18,3 @@ export interface OrderSubmissionPayload {
   items: Array<{ productId: number; quantity: number }>;
   note?: string;
 }
-

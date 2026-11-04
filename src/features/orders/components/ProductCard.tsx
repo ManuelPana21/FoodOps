@@ -1,6 +1,6 @@
 import { Button } from "../../../components/common/Button";
+import { Icon } from "../../../components/common/Icon";
 import type { Product } from "../../../types/product";
-import { formatCurrency } from "../../../utils/formatters";
 
 interface ProductCardProps {
   product: Product;
@@ -16,10 +16,9 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
             alt={product.name}
             className="product-image"
             src={product.image}
-            loading="lazy"
           />
         ) : (
-          <div className="soda-art" aria-label={product.name}>
+          <div className="soda-art" aria-label="Soda fría">
             <span />
             <strong>SODA</strong>
             <i />
@@ -27,18 +26,17 @@ export function ProductCard({ product, onAdd }: ProductCardProps) {
         )}
         <span className="product-category">{product.category}</span>
       </div>
-
       <div className="product-content">
         <div className="product-name">{product.name}</div>
         <div className="product-description">{product.description}</div>
         <div className="product-footer">
-          <span className="product-price">{formatCurrency(product.price)}</span>
+          <span className="product-price">${product.price.toFixed(2)}</span>
           <Button
             className="add-button"
-            icon="plus"
-            label={`Agregar ${product.name} a la comanda`}
+            label={`Agregar ${product.name}`}
             onClick={() => onAdd(product)}
           >
+            <Icon name="plus" />
             <span>Agregar</span>
           </Button>
         </div>

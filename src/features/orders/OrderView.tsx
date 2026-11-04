@@ -6,65 +6,11 @@ import { CartDrawer } from "./components/CartDrawer";
 import { ConfirmModal } from "../../components/feedback/ConfirmModal";
 import { Toast } from "../../components/feedback/Toast";
 import { Button } from "../../components/common/Button";
-import type { Product, ProductCategory } from "../../types/product";
+import { Icon } from "../../components/common/Icon";
+import type { ProductCategory } from "../../types/product";
 import type { CartState } from "../../types/order";
-import { formatCurrency } from "../../utils/formatters";
-
-const initialProducts: Product[] = [
-  {
-    id: 1,
-    name: "Hamburguesa Clásica",
-    description: "Carne, queso, lechuga y salsa de la casa",
-    price: 6.5,
-    category: "Platos Fuertes",
-    image:
-      "https://images.unsplash.com/photo-1600688640154-9619e002df30?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    id: 2,
-    name: "Tacos al Pastor",
-    description: "Tres tacos, piña, cilantro y cebolla",
-    price: 5.0,
-    category: "Platos Fuertes",
-    image:
-      "https://images.unsplash.com/photo-1651440204296-a79fa9988007?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    id: 3,
-    name: "Pasta Cremosa",
-    description: "Pasta fresca, parmesano y hierbas",
-    price: 7.5,
-    category: "Platos Fuertes",
-    image:
-      "https://images.unsplash.com/photo-1576866206724-c696f4c9fa06?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    id: 4,
-    name: "Alitas BBQ",
-    description: "Seis alitas con salsa BBQ ahumada",
-    price: 5.75,
-    category: "Entradas",
-    image:
-      "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=85",
-  },
-  {
-    id: 5,
-    name: "Soda",
-    description: "Coca-Cola, Sprite o Fanta · 355 ml",
-    price: 1.5,
-    category: "Bebidas",
-    image: null,
-  },
-  {
-    id: 6,
-    name: "Brownie Tibio",
-    description: "Chocolate oscuro y helado de vainilla",
-    price: 3.5,
-    category: "Postres",
-    image:
-      "https://images.unsplash.com/photo-1768342068919-1ee67c1053ba?auto=format&fit=crop&w=800&q=85",
-  },
-];
+import { addTicketFromOrder, apiClient, initialProducts } from "../../services/api";
+import { getActiveUserName } from "../../services/auth";
 
 const categories: ProductCategory[] = [
   "Todos",
@@ -91,25 +37,16 @@ export function OrderView({
   const [cartOpen, setCartOpen] = useState(false);
   const [sent, setSent] = useState(false);
 
-  const filteredProducts = useMemo(() => {
-    if (activeCategory === "Todos") return initialProducts;
-    return initialProducts.filter((product) => product.category === activeCategory);
-  }, [activeCategory]);
-
-  const cartItems = useMemo(
-    () => initialProducts.filter((product) => (cart[product.id] ?? 0) > 0),
-    [cart],
-  );
-
-  const itemCount = useMemo(
-    () => Object.values(cart).reduce((sum, qty) => sum + qty, 0),
-    [cart],
-  );
-
+  const filtered =
+    activeCategory === "Todos"
+      ? initialProducts
+      : initialProducts.filter((product) => product.category === activeCategory);
+  const cartItems = initialProducts.filter((product) => cart[product.id]);
+  const itemCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
   const total = useMemo(
     () =>
       cartItems.reduce(
-        (sum, product) => sum + product.price * (cart[product.id] ?? 0),
+        (sum, product) => sum + product.price * cart[product.id],
         0,
       ),
     [cart, cartItems],
@@ -126,6 +63,34 @@ export function OrderView({
   };
 
   const confirmSend = () => {
+    const serverFull = getActiveUserName() || "Manuel Panameño";
+    const serverShort = serverFull.split(" ")[0] || "Manuel";
+    const formattedItems = cartItems.map(
+      (item) => `${cart[item.id]}× ${item.name}`,
+    );
+
+    // Registrar en cola compartida de cocina (KDS)
+    addTicketFromOrder({
+      table: "Mesa 08",
+      server: serverShort,
+      items: formattedItems,
+      note: null,
+    });
+
+    // Sincronizar con backend API si está activo
+    apiClient
+      .createOrder({
+        tableNumber: "Mesa 08",
+        serverId: 1,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: cart[item.id],
+        })),
+      })
+      .catch(() => {
+        // Fallback local ya persistido en sessionStorage
+      });
+
     setModalOpen(false);
     setCartOpen(false);
     setSent(true);
@@ -140,13 +105,13 @@ export function OrderView({
       <OrderHeader onKitchen={onKitchen} onLogout={onLogout} />
 
       <main className="order-main">
-        <section className="catalog" aria-label="Catálogo de productos">
+        <section className="catalog">
           <div className="catalog-heading">
             <div>
               <span className="eyebrow">Nueva comanda</span>
               <div className="page-title">¿Qué servimos hoy?</div>
             </div>
-            <div className="table-chip" aria-label="Mesa 08 seleccionada">
+            <div className="table-chip">
               <span>Mesa</span>
               <strong>08</strong>
             </div>
@@ -159,7 +124,7 @@ export function OrderView({
           />
 
           <ProductGrid
-            products={filteredProducts}
+            products={filtered}
             onAddProduct={(product) => changeQuantity(product.id, 1)}
           />
         </section>
@@ -177,25 +142,21 @@ export function OrderView({
         />
       </main>
 
-      <div className="mobile-cart-bar" role="region" aria-label="Resumen móvil de comanda">
+      <div className="mobile-cart-bar">
         <div>
           <span>{itemCount} artículos</span>
-          <strong>{formatCurrency(total)}</strong>
+          <strong>${total.toFixed(2)}</strong>
         </div>
-        <Button
-          className="mobile-cart-button"
-          icon="receipt"
-          label="Abrir comanda"
-          onClick={() => setCartOpen(true)}
-        >
+        <Button className="mobile-cart-button" onClick={() => setCartOpen(true)}>
+          <Icon name="receipt" />
           Ver comanda
         </Button>
       </div>
 
       {sent && (
         <Toast
-          title="¡Pedido enviado con éxito!"
-          message="La comanda fue registrada y transmitida a la cola de preparación en cocina."
+          title="¡Pedido enviado!"
+          message="La cocina ya recibió la comanda."
           onClose={() => setSent(false)}
         />
       )}

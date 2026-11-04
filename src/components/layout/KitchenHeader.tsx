@@ -8,7 +8,7 @@ interface KitchenHeaderProps {
   currentTime: Date;
 }
 
-export function KitchenHeader({ onOrders, onLogout, currentTime }: KitchenHeaderProps) {
+export function KitchenHeader({ onOrders, currentTime }: KitchenHeaderProps) {
   return (
     <header className="kds-header">
       <Brand dark />
@@ -17,7 +17,7 @@ export function KitchenHeader({ onOrders, onLogout, currentTime }: KitchenHeader
         <strong>Cola de Cocina</strong>
       </div>
       <div className="kds-header-actions">
-        <div className="live-badge" aria-label="Actualización en tiempo real activa">
+        <div className="live-badge">
           <i />
           EN VIVO
         </div>
@@ -32,28 +32,10 @@ export function KitchenHeader({ onOrders, onLogout, currentTime }: KitchenHeader
             CST
           </strong>
         </div>
-
-        {onOrders && (
-          <Button
-            className="orders-shortcut"
-            label="Volver a toma de comandas"
-            onClick={onOrders}
-          >
-            <Icon name="receipt" />
-            <span>Tomar pedido</span>
-          </Button>
-        )}
-
-        {onLogout && (
-          <Button
-            className="logout-shortcut"
-            label="Cerrar sesión"
-            onClick={onLogout}
-          >
-            <Icon name="x" />
-            <span>Salir</span>
-          </Button>
-        )}
+        <Button className="orders-shortcut" onClick={onOrders}>
+          <Icon name="receipt" />
+          <span>Tomar pedido</span>
+        </Button>
       </div>
     </header>
   );

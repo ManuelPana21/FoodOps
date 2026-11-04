@@ -13,20 +13,16 @@ export function CategoryTabs({
   onSelectCategory,
 }: CategoryTabsProps) {
   return (
-    <nav className="category-row" aria-label="Filtrar por categoría">
-      {categories.map((category) => {
-        const isActive = activeCategory === category;
-        return (
-          <Button
-            key={category}
-            className={`category-pill ${isActive ? "category-active" : ""}`}
-            label={`Categoría ${category}`}
-            onClick={() => onSelectCategory(category)}
-          >
-            {category}
-          </Button>
-        );
-      })}
-    </nav>
+    <div className="category-row" aria-label="Categorías">
+      {categories.map((category) => (
+        <Button
+          className={`category-pill ${activeCategory === category ? "category-active" : ""}`}
+          key={category}
+          onClick={() => onSelectCategory(category)}
+        >
+          {category}
+        </Button>
+      ))}
+    </div>
   );
 }
