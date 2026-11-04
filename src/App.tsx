@@ -1,10 +1,20 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import {
+  getActiveRole,
+  getActiveUserName,
+  logout,
+  ROLE_HOME,
+} from "./services/auth";
 
 type IconName =
   | "chef"
   | "check"
   | "chevron"
   | "clock"
+  | "logout"
   | "minus"
   | "plus"
   | "receipt"
@@ -30,6 +40,7 @@ function Icon({ name, size = 20 }: { name: IconName; size?: number }) {
         <path d="M12 7v5l3 2" />
       </>
     ),
+    logout: <path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H3" />,
     minus: <path d="M6 12h12" />,
     plus: <path d="M12 5v14M5 12h14" />,
     receipt: (
@@ -190,7 +201,17 @@ function Brand({ dark = false }: { dark?: boolean }) {
   );
 }
 
-function OrderView({ onKitchen }: { onKitchen: () => void }) {
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("");
+}
+
+function OrderView({ onLogout }: { onLogout: () => void }) {
+  const userName = getActiveUserName() ?? "Mesero";
   const [activeCategory, setActiveCategory] = useState("Todos");
   const [cart, setCart] = useState<Cart>({ 1: 1, 2: 1, 5: 1 });
   const [modalOpen, setModalOpen] = useState(false);
@@ -240,16 +261,16 @@ function OrderView({ onKitchen }: { onKitchen: () => void }) {
             <span>En línea</span>
           </div>
           <div className="server-profile">
-            <div className="avatar">MP</div>
+            <div className="avatar">{getInitials(userName)}</div>
             <div className="profile-copy">
               <span className="profile-label">Mesero</span>
-              <strong>Manuel Panameño</strong>
+              <strong>{userName}</strong>
             </div>
             <Icon name="chevron" size={18} />
           </div>
-          <Button className="kitchen-shortcut" onClick={onKitchen}>
-            <Icon name="chef" />
-            <span>Cocina</span>
+          <Button className="kitchen-shortcut" label="Cerrar sesión" onClick={onLogout}>
+            <Icon name="logout" />
+            <span>Salir</span>
           </Button>
         </div>
       </header>
@@ -577,7 +598,7 @@ const initialTickets = [
   },
 ];
 
-function KitchenView({ onOrders }: { onOrders: () => void }) {
+function KitchenView({ onLogout }: { onLogout: () => void }) {
   const [tickets, setTickets] = useState(initialTickets);
   const [time, setTime] = useState(new Date());
 
@@ -618,9 +639,9 @@ function KitchenView({ onOrders }: { onOrders: () => void }) {
               CST
             </strong>
           </div>
-          <Button className="orders-shortcut" onClick={onOrders}>
-            <Icon name="receipt" />
-            <span>Tomar pedido</span>
+          <Button className="orders-shortcut" label="Cerrar sesión" onClick={onLogout}>
+            <Icon name="logout" />
+            <span>Salir</span>
           </Button>
         </div>
       </header>
@@ -723,12 +744,40 @@ function KitchenView({ onOrders }: { onOrders: () => void }) {
   );
 }
 
-export default function App() {
-  const [screen, setScreen] = useState<"orders" | "kitchen">("orders");
+/** Redirige la raíz (y rutas desconocidas) según el rol activo. */
+function HomeRedirect() {
+  const role = getActiveRole();
+  return <Navigate to={role ? ROLE_HOME[role] : "/login"} replace />;
+}
 
-  return screen === "orders" ? (
-    <OrderView onKitchen={() => setScreen("kitchen")} />
-  ) : (
-    <KitchenView onOrders={() => setScreen("orders")} />
+export default function App() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route
+        path="/comandas"
+        element={
+          <ProtectedRoute allowedRole="Mesero">
+            <OrderView onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/cocina"
+        element={
+          <ProtectedRoute allowedRole="Cocinero">
+            <KitchenView onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<HomeRedirect />} />
+    </Routes>
   );
 }
