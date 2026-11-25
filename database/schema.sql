@@ -1,14 +1,6 @@
 -- ==============================================================================
 -- FoodOps - Esquema de Base de Datos SQLite (Migrado desde MySQL)
 -- ==============================================================================
--- Adaptaciones de MySQL a SQLite:
--- 1. INT AUTO_INCREMENT -> INTEGER PRIMARY KEY AUTOINCREMENT
--- 2. VARCHAR(N), TEXT, ENUM -> TEXT con restricciones CHECK
--- 3. DECIMAL(10,2) -> REAL o NUMERIC
--- 4. TIMESTAMP / DATETIME DEFAULT CURRENT_TIMESTAMP -> DATETIME DEFAULT CURRENT_TIMESTAMP
--- 5. Eliminado ENGINE=InnoDB y charset utf8mb4 (nativo en SQLite)
--- ==============================================================================
-
 PRAGMA foreign_keys = ON;
 
 -- 1. Categorías de Productos
@@ -31,10 +23,12 @@ CREATE TABLE IF NOT EXISTS products (
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE RESTRICT
 );
 
--- 3. Usuarios y Personal (Meseros, Cocineros, Admin)
+-- 3. Usuarios y Personal (Meseros, Cocineros, Admin) con credenciales hasheadas
 CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
     role TEXT NOT NULL CHECK(role IN ('waiter', 'kitchen', 'admin')),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -44,7 +38,7 @@ CREATE TABLE IF NOT EXISTS orders (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     table_number TEXT NOT NULL,
     server_id INTEGER NOT NULL,
-    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'progress', 'done', 'cancelled')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'in_progress', 'progress', 'done', 'cancelled')),
     note TEXT,
     total_amount REAL NOT NULL DEFAULT 0.0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -68,4 +62,4 @@ CREATE TABLE IF NOT EXISTS order_items (
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
-
+CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);

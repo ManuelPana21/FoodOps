@@ -5,7 +5,14 @@ Garantiza que los pedidos contengan al menos un item con cantidad mayor a 0.
 from typing import Optional, List, Literal
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
-TicketStatus = Literal["pending", "progress", "done", "cancelled"]
+TicketStatus = Literal["pending", "in_progress", "progress", "done", "cancelled"]
+
+
+def calculate_order_totals(items_with_prices: List[tuple[int, float]]) -> tuple[List[float], float]:
+    """Calcula subtotales por item y el total_amount redondeado a 2 decimales."""
+    subtotals = [round(qty * unit_price, 2) for qty, unit_price in items_with_prices]
+    total_amount = round(sum(subtotals), 2)
+    return subtotals, total_amount
 
 
 class OrderItemBase(BaseModel):

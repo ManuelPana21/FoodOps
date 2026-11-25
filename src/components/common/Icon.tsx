@@ -5,11 +5,14 @@ export type IconName =
   | "check"
   | "chevron"
   | "clock"
+  | "edit"
   | "minus"
   | "plus"
+  | "printer"
   | "receipt"
   | "search"
   | "spark"
+  | "tag"
   | "trash"
   | "warning"
   | "x";
@@ -36,8 +39,21 @@ export function Icon({ name, size = 20, className = "" }: IconProps) {
         <path d="M12 7v5l3 2" />
       </>
     ),
+    edit: (
+      <>
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+      </>
+    ),
     minus: <path d="M6 12h12" />,
     plus: <path d="M12 5v14M5 12h14" />,
+    printer: (
+      <>
+        <path d="M6 9V2h12v7" />
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+        <rect x="6" y="14" width="12" height="8" />
+      </>
+    ),
     receipt: (
       <>
         <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Z" />
@@ -54,6 +70,12 @@ export function Icon({ name, size = 20, className = "" }: IconProps) {
       <>
         <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
         <path d="m5.6 5.6 2 2m8.8 8.8 2 2m0-12.8-2 2M7.6 16.4l-2 2" />
+      </>
+    ),
+    tag: (
+      <>
+        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
+        <path d="M7 7h.01" />
       </>
     ),
     trash: (

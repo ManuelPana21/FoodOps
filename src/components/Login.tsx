@@ -5,6 +5,7 @@ import { getActiveRole, login, ROLE_HOME, type Role } from "../services/auth";
 const DEMO_ACCOUNTS: { role: Role; username: string; password: string }[] = [
   { role: "Mesero", username: "mesero", password: "mesero123" },
   { role: "Cocinero", username: "cocinero", password: "cocina123" },
+  { role: "Admin", username: "admin", password: "admin123" },
 ];
 
 export default function Login() {
@@ -66,7 +67,7 @@ export default function Login() {
         </div>
 
         <h1 className="login-title">Iniciar sesión</h1>
-        <p className="login-subtitle">Accede con tu usuario de Mesero o Cocinero.</p>
+        <p className="login-subtitle">Accede con tu usuario de Mesero, Cocinero o Admin.</p>
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <label className="login-field">
@@ -79,7 +80,7 @@ export default function Login() {
                 setUsername(event.target.value);
                 setError(null);
               }}
-              placeholder="mesero"
+              placeholder="mesero, cocinero o admin"
               type="text"
               value={username}
             />
@@ -113,7 +114,7 @@ export default function Login() {
 
         <div className="login-demo">
           <span>Cuentas de prueba</span>
-          <div className="login-demo-grid">
+          <div className="login-demo-grid login-demo-grid-3">
             {DEMO_ACCOUNTS.map((account) => (
               <button
                 className="button-base login-demo-button"

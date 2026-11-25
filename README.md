@@ -328,3 +328,51 @@ Seguimos la convención de [Conventional Commits](https://www.conventionalcommit
 - `refactor(...)`: Reestructuración de código sin alterar comportamiento.
 - `chore(...)`: Tareas de mantenimiento o configuración.
 
+
+---
+
+## 🧪 Aseguramiento de Calidad (QA), Pruebas y Colección API
+
+### 1. Variables de Entorno de Seguridad y Semillas (`.env`)
+Asegúrate de tener copiadas y configuradas las variables de JWT y credenciales iniciales desde `.env.example`:
+
+```ini
+JWT_SECRET_KEY=cambia-esta-clave-secreta-en-produccion-foodops-2026
+JWT_ALGORITHM=HS256
+JWT_EXPIRE_MINUTES=480
+
+SEED_WAITER_USERNAME=mesero
+SEED_WAITER_PASSWORD=mesero123
+SEED_KITCHEN_USERNAME=cocinero
+SEED_KITCHEN_PASSWORD=cocina123
+SEED_ADMIN_USERNAME=admin
+SEED_ADMIN_PASSWORD=admin123
+```
+
+### 2. Instalación de Dependencias e Inicialización de BD
+```bash
+# Backend Python (FastAPI, Pydantic, PyJWT, pytest, httpx, pytest-asyncio)
+python -m pip install -r backend/requirements.txt
+
+# Inicializar SQLite con esquema y usuarios con contraseñas hasheadas (PBKDF2-SHA256)
+python database/init_db.py
+
+# Frontend React + Vitest
+npm install
+```
+
+### 3. Ejecutar Pruebas Automatizadas
+
+```bash
+# Suite completa de Backend (Unitarias, Integración, Concurrencia y Seguridad RBAC)
+python -m pytest backend/tests -v
+
+# Pruebas de componentes Frontend (Vitest + React Testing Library)
+npm test
+
+# Compilación de producción Frontend
+npm run build
+```
+
+### 4. Colección HTTP (Postman / Thunder Client)
+Importa el archivo [`docs/FoodOps_API_Collection.json`](docs/FoodOps_API_Collection.json) para probar manualmente todos los módulos (**Auth**, **Productos** y **Órdenes**), incluyendo casos exitosos (`200`/`201`) y negativos (`401`/`403`/`422`).

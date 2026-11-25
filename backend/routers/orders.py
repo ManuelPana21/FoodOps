@@ -6,12 +6,14 @@ import sqlite3
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from backend.database import get_db
+from backend.security import get_current_user, require_roles
 from backend.schemas.order import (
     OrderCreate,
     OrderResponse,
     OrderItemResponse,
     OrderStatusUpdate,
     KitchenTicketResponse,
+    calculate_order_totals,
 )
 
 router = APIRouter(prefix="/api/orders", tags=["Pedidos"])
@@ -27,6 +29,7 @@ router = APIRouter(prefix="/api/orders", tags=["Pedidos"])
 def create_order(
     order_in: OrderCreate,
     db: sqlite3.Connection = Depends(get_db),
+    _current_user: dict = Depends(require_roles("waiter", "admin")),
 ):
     cursor = db.cursor()
 
@@ -62,18 +65,18 @@ def create_order(
             )
 
         unit_price = item.unit_price if item.unit_price is not None else float(prod["price"])
-        subtotal = round(unit_price * item.quantity, 2)
-        total_amount += subtotal
-
         prepared_items.append({
             "product_id": item.product_id,
             "product_name": prod["name"],
             "quantity": item.quantity,
             "unit_price": unit_price,
-            "subtotal": subtotal,
         })
 
-    total_amount = round(total_amount, 2)
+    subtotals, total_amount = calculate_order_totals(
+        [(p["quantity"], p["unit_price"]) for p in prepared_items]
+    )
+    for p_item, subtotal in zip(prepared_items, subtotals):
+        p_item["subtotal"] = subtotal
 
     # 3. Insertar la orden principal
     cursor.execute(
@@ -133,7 +136,10 @@ def create_order(
     response_model=List[OrderResponse],
     summary="Listar todos los pedidos",
 )
-def list_orders(db: sqlite3.Connection = Depends(get_db)):
+def list_orders(
+    db: sqlite3.Connection = Depends(get_db),
+    _current_user: dict = Depends(get_current_user),
+):
     cursor = db.cursor()
     cursor.execute(
         """
@@ -195,7 +201,10 @@ def list_orders(db: sqlite3.Connection = Depends(get_db)):
     response_model=List[KitchenTicketResponse],
     summary="Cola activa para Kitchen Display System (KDS)",
 )
-def get_kds_queue(db: sqlite3.Connection = Depends(get_db)):
+def get_kds_queue(
+    db: sqlite3.Connection = Depends(get_db),
+    _current_user: dict = Depends(get_current_user),
+):
     """Obtiene los tickets en estado pendiente o en progreso para cocina."""
     cursor = db.cursor()
     cursor.execute(
@@ -203,7 +212,7 @@ def get_kds_queue(db: sqlite3.Connection = Depends(get_db)):
         SELECT o.id, o.table_number, o.status, o.note, o.created_at, u.name as server_name
         FROM orders o
         LEFT JOIN users u ON o.server_id = u.id
-        WHERE o.status IN ('pending', 'progress')
+        WHERE o.status IN ('pending', 'in_progress', 'progress')
         ORDER BY o.created_at ASC;
         """
     )
@@ -243,7 +252,11 @@ def get_kds_queue(db: sqlite3.Connection = Depends(get_db)):
     response_model=OrderResponse,
     summary="Obtener detalle de un pedido por ID",
 )
-def get_order_by_id(order_id: int, db: sqlite3.Connection = Depends(get_db)):
+def get_order_by_id(
+    order_id: int,
+    db: sqlite3.Connection = Depends(get_db),
+    _current_user: dict = Depends(get_current_user),
+):
     cursor = db.cursor()
     cursor.execute(
         """
@@ -308,25 +321,34 @@ def update_order_status(
     order_id: int,
     status_update: OrderStatusUpdate,
     db: sqlite3.Connection = Depends(get_db),
+    _current_user: dict = Depends(require_roles("kitchen", "admin")),
 ):
     cursor = db.cursor()
-    cursor.execute("SELECT id, status FROM orders WHERE id = ?;", (order_id,))
-    order_row = cursor.fetchone()
-    if not order_row:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"No se puede actualizar: el pedido #{order_id} no existe.",
-        )
+    try:
+        cursor.execute("BEGIN IMMEDIATE;")
+        cursor.execute("SELECT id, status FROM orders WHERE id = ?;", (order_id,))
+        order_row = cursor.fetchone()
+        if not order_row:
+            db.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"No se puede actualizar: el pedido #{order_id} no existe.",
+            )
 
-    cursor.execute(
-        """
-        UPDATE orders
-        SET status = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?;
-        """,
-        (status_update.status, order_id),
-    )
-    db.commit()
+        cursor.execute(
+            """
+            UPDATE orders
+            SET status = ?, updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?;
+            """,
+            (status_update.status, order_id),
+        )
+        db.commit()
+    except HTTPException:
+        raise
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "id": order_id,

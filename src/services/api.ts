@@ -6,6 +6,7 @@ import type { Product } from '../types/product';
  */
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 const TICKETS_STORAGE_KEY = 'foodops.kdsTickets';
+const PRODUCTS_STORAGE_KEY = 'foodops.products';
 
 export const foodPhotos = {
   burger:
@@ -70,6 +71,59 @@ export const initialProducts: Product[] = [
     image: foodPhotos.brownie,
   },
 ];
+
+export function loadStoredProducts(): Product[] {
+  try {
+    const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY);
+    if (!raw) {
+      localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(initialProducts));
+      return initialProducts;
+    }
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as Product[]) : initialProducts;
+  } catch {
+    return initialProducts;
+  }
+}
+
+export function saveStoredProducts(products: Product[]): void {
+  try {
+    localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+  } catch {
+    // Ignore storage quota errors
+  }
+}
+
+export function addStoredProduct(data: Omit<Product, 'id'>): Product[] {
+  const current = loadStoredProducts();
+  const maxId = current.reduce((max, p) => Math.max(max, p.id), 0);
+  const newProduct: Product = {
+    ...data,
+    id: maxId + 1,
+  };
+  const next = [...current, newProduct];
+  saveStoredProducts(next);
+  return next;
+}
+
+export function updateStoredProduct(id: number, data: Omit<Product, 'id'>): Product[] {
+  const current = loadStoredProducts();
+  const next = current.map((p) => (p.id === id ? { ...data, id } : p));
+  saveStoredProducts(next);
+  return next;
+}
+
+export function deleteStoredProduct(id: number): Product[] {
+  const current = loadStoredProducts();
+  const next = current.filter((p) => p.id !== id);
+  saveStoredProducts(next);
+  return next;
+}
+
+export function resetStoredProducts(): Product[] {
+  saveStoredProducts(initialProducts);
+  return initialProducts;
+}
 
 export const defaultTickets: KitchenTicket[] = [
   {

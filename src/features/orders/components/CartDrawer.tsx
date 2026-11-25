@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Button } from "../../../components/common/Button";
 import { Icon } from "../../../components/common/Icon";
 import type { Product } from "../../../types/product";
 import type { CartState } from "../../../types/order";
+import type { Coupon } from "../../../types/billing";
+import { findActiveCoupon } from "../../../services/billing";
 
 interface CartDrawerProps {
   cart: CartState;
@@ -9,7 +12,11 @@ interface CartDrawerProps {
   changeQuantity: (id: number, amount: number) => void;
   itemCount: number;
   open: boolean;
+  subtotal: number;
+  discountAmount: number;
   total: number;
+  appliedCoupon: Coupon | null;
+  onApplyCoupon: (coupon: Coupon | null) => void;
   tableNumber?: string;
   onClose: () => void;
   onSend: () => void;
@@ -21,11 +28,29 @@ export function CartDrawer({
   changeQuantity,
   itemCount,
   open,
+  subtotal,
+  discountAmount,
   total,
+  appliedCoupon,
+  onApplyCoupon,
   tableNumber = "Mesa 08",
   onClose,
   onSend,
 }: CartDrawerProps) {
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
+
+  const handleApplyCoupon = () => {
+    const found = findActiveCoupon(couponInput);
+    if (!found) {
+      setCouponError("Cupón no válido o inactivo.");
+      return;
+    }
+    onApplyCoupon(found);
+    setCouponInput("");
+    setCouponError(null);
+  };
+
   return (
     <>
       {open && <div className="cart-scrim" onClick={onClose} />}
@@ -87,10 +112,70 @@ export function CartDrawer({
         </div>
 
         <div className="cart-summary">
+          {cartItems.length > 0 && (
+            <div className="cart-coupon-box">
+              {appliedCoupon ? (
+                <div className="applied-coupon-pill">
+                  <span>
+                    <Icon name="tag" size={14} /> Cupón{" "}
+                    <strong>{appliedCoupon.code}</strong> (
+                    {appliedCoupon.type === "percent"
+                      ? `-${appliedCoupon.value}%`
+                      : `-$${appliedCoupon.value.toFixed(2)}`}
+                    )
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Quitar cupón"
+                    onClick={() => onApplyCoupon(null)}
+                  >
+                    <Icon name="x" size={14} />
+                  </button>
+                </div>
+              ) : (
+                <div className="coupon-input-row">
+                  <input
+                    type="text"
+                    placeholder="Cupón (ej. FOOD10)"
+                    value={couponInput}
+                    onChange={(e) => {
+                      setCouponInput(e.target.value.toUpperCase());
+                      setCouponError(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleApplyCoupon();
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="coupon-apply-btn"
+                    onClick={handleApplyCoupon}
+                  >
+                    Aplicar
+                  </button>
+                </div>
+              )}
+              {couponError && (
+                <div className="coupon-error-text">{couponError}</div>
+              )}
+            </div>
+          )}
+
           <div className="summary-line">
             <span>Subtotal</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${subtotal.toFixed(2)}</span>
           </div>
+
+          {discountAmount > 0 && (
+            <div className="summary-line summary-discount">
+              <span>Descuento aplicado</span>
+              <span>-${discountAmount.toFixed(2)}</span>
+            </div>
+          )}
+
           <div className="total-line">
             <div>
               <strong>Total</strong>
@@ -103,7 +188,7 @@ export function CartDrawer({
             onClick={cartItems.length ? onSend : undefined}
           >
             <Icon name="spark" />
-            Enviar a Cocina
+            Enviar a Cocina y Facturar
             <Icon name="chevron" />
           </Button>
         </div>
