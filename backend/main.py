@@ -6,6 +6,7 @@ Integra schemas Pydantic de validación de pedidos y middleware de excepciones H
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.middleware.error_handler import register_error_handlers
+from backend.routers.auth import router as auth_router
 from backend.routers.orders import router as orders_router
 from backend.routers.products import router as products_router
 from backend.routers.test_errors import router as test_errors_router
@@ -35,6 +36,7 @@ app.add_middleware(
 register_error_handlers(app)
 
 # 3. Registrar routers modulares
+app.include_router(auth_router)
 app.include_router(orders_router)
 app.include_router(products_router)
 app.include_router(test_errors_router)

@@ -6,7 +6,7 @@
  * sesión se pierde al cerrar la pestaña del navegador.
  */
 
-export type Role = "Mesero" | "Cocinero";
+export type Role = "Mesero" | "Cocinero" | "Admin";
 
 export interface MockUser {
   username: string;
@@ -24,6 +24,7 @@ export const USER_STORAGE_KEY = "foodops.activeUser";
 export const ROLE_HOME: Record<Role, string> = {
   Mesero: "/comandas",
   Cocinero: "/cocina",
+  Admin: "/admin",
 };
 
 /** Usuarios de prueba (autenticación simulada). */
@@ -40,10 +41,16 @@ const MOCK_USERS: MockUser[] = [
     name: "Jefe de Cocina",
     role: "Cocinero",
   },
+  {
+    username: "admin",
+    password: "admin123",
+    name: "Administrador",
+    role: "Admin",
+  },
 ];
 
 const isRole = (value: string | null): value is Role =>
-  value === "Mesero" || value === "Cocinero";
+  value === "Mesero" || value === "Cocinero" || value === "Admin";
 
 /**
  * Valida las credenciales contra la lista hardcoded. Si son correctas,
@@ -63,7 +70,7 @@ export function login(username: string, password: string): MockUser | null {
   return user;
 }
 
-/** Cambia rápidamente el rol activo para navegar entre Mesero y Cocina. */
+/** Cambia rápidamente el rol activo para navegar entre Mesero, Cocina y Admin. */
 export function switchRole(role: Role): void {
   const targetUser = MOCK_USERS.find((u) => u.role === role);
   sessionStorage.setItem(ROLE_STORAGE_KEY, role);

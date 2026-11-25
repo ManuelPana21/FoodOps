@@ -1705,3 +1705,919 @@
   background: #fef2f2;
   color: #dc2626;
 }
+
+.profile-dropdown button.dropdown-item-admin:hover {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.login-demo-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ============================================================================
+   Panel de Administración de Menú y Platillos (FoodOps Admin)
+   ============================================================================ */
+.admin-main {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.admin-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.admin-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-add-button {
+  background: #1e40af;
+  padding: 0 1.15rem;
+  color: white;
+  font-size: 0.82rem;
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.22);
+}
+
+.admin-add-button:hover {
+  background: #1e3a8a;
+}
+
+.admin-reset-button {
+  border: 1px solid #dbe2ea;
+  background: white;
+  padding: 0 1rem;
+  color: #4b5563;
+  font-size: 0.78rem;
+}
+
+.admin-reset-button:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.admin-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.admin-filters-bar .category-row {
+  margin: 0;
+}
+
+.admin-search-box {
+  display: flex;
+  height: 48px;
+  min-width: 260px;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid #e1e5eb;
+  border-radius: 0.75rem;
+  background: white;
+  padding: 0 0.9rem;
+  color: #6b7280;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+}
+
+.admin-search-box input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+.admin-search-box button {
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+}
+
+.admin-search-box button:hover {
+  color: #374151;
+}
+
+.admin-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.admin-edit-btn {
+  min-height: 40px;
+  background: #eef2ff;
+  padding: 0 0.75rem;
+  color: #1e40af;
+  font-size: 0.72rem;
+}
+
+.admin-edit-btn:hover {
+  background: #1e40af;
+  color: white;
+}
+
+.admin-delete-btn {
+  width: 40px;
+  min-height: 40px;
+  border: 1px solid #fee2e2;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.admin-delete-btn:hover {
+  background: #dc2626;
+  color: white;
+}
+
+.admin-empty {
+  display: flex;
+  min-height: 340px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border: 1px dashed #cbd5e1;
+  border-radius: 1rem;
+  background: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.admin-empty > div {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.admin-empty span {
+  max-width: 320px;
+  color: #6b7280;
+  font-size: 0.78rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-modal {
+  width: min(100%, 560px);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1.35rem 1.5rem 1.1rem;
+}
+
+.admin-modal-header .modal-title {
+  margin-top: 0.15rem;
+  font-size: 1.25rem;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.admin-form-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 0.85rem;
+}
+
+.admin-select {
+  height: 46px;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  background: #f9fafb;
+  padding: 0 0.85rem;
+  font-size: 0.85rem;
+  color: #111827;
+  outline: none;
+}
+
+.admin-select:focus {
+  border-color: #1e40af;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+}
+
+.admin-preset-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+
+.admin-preset-chip {
+  border: 1px solid #dbe2ea;
+  border-radius: 999px;
+  background: #f9fafb;
+  padding: 0.3rem 0.65rem;
+  color: #4b5563;
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: all 140ms ease;
+}
+
+.admin-preset-chip:hover {
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+.admin-preset-active {
+  border-color: #1e40af;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.admin-modal-actions {
+  padding: 0.5rem 0 1.4rem;
+}
+
+@media (max-width: 680px) {
+  .login-demo-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-search-box {
+    width: 100%;
+  }
+}
+
+.server-profile-trigger {
+  background: transparent;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 0.5rem;
+  padding-right: 0.6rem;
+  text-align: left;
+  transition: background-color 150ms ease;
+}
+
+.server-profile-trigger:hover,
+.server-profile-open {
+  background: #f3f4f6;
+}
+
+.profile-chevron {
+  color: #6b7280;
+  transition: transform 160ms ease;
+}
+
+.profile-chevron-open {
+  transform: rotate(90deg);
+  color: #1e40af;
+}
+
+.logout-shortcut {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  padding: 0 0.9rem;
+  color: #dc2626;
+  font-size: 0.82rem;
+}
+
+.logout-shortcut:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+.kds-logout-shortcut:hover {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+}
+
+@media (max-width: 680px) {
+  .logout-shortcut span,
+  .kds-logout-shortcut span {
+    display: none;
+  }
+
+  .logout-shortcut {
+    width: 48px;
+    padding: 0;
+  }
+}
+
+/* ============================================================================
+   Facturación, Cupones, Impresión y Corte Diario (FoodOps Billing)
+   ============================================================================ */
+.cart-coupon-box {
+  margin-bottom: 0.85rem;
+}
+
+.coupon-input-row {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.coupon-input-row input {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  border: 1px solid #d1d5db;
+  border-radius: 0.6rem;
+  background: white;
+  padding: 0 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #111827;
+  outline: none;
+}
+
+.coupon-input-row input:focus {
+  border-color: #1e40af;
+}
+
+.coupon-apply-btn {
+  height: 38px;
+  border-radius: 0.6rem;
+  background: #eef2ff;
+  padding: 0 0.85rem;
+  color: #1e40af;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.coupon-apply-btn:hover {
+  background: #1e40af;
+  color: white;
+}
+
+.coupon-error-text {
+  margin-top: 0.35rem;
+  color: #dc2626;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.applied-coupon-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #a7f3d0;
+  border-radius: 0.6rem;
+  background: #ecfdf5;
+  padding: 0.45rem 0.65rem;
+  color: #047857;
+  font-size: 0.72rem;
+}
+
+.applied-coupon-pill span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.applied-coupon-pill button {
+  display: grid;
+  place-items: center;
+  color: #047857;
+}
+
+.summary-discount {
+  margin-top: 0.35rem;
+  color: #059669;
+  font-weight: 700;
+}
+
+.modal-item-discount {
+  color: #059669;
+}
+
+.modal-billing-box {
+  margin: 0.85rem 1.5rem 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: white;
+  padding: 0.85rem 1rem;
+}
+
+.modal-invoice-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #111827;
+  cursor: pointer;
+}
+
+.modal-invoice-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: #1e40af;
+}
+
+.modal-billing-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+
+.modal-billing-fields .login-field input,
+.modal-billing-fields .admin-select {
+  height: 38px;
+  font-size: 0.78rem;
+}
+
+.billing-date-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.billing-date-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.billing-date-picker span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.billing-date-picker input {
+  height: 48px;
+  border: 1px solid #dbe2ea;
+  border-radius: 0.75rem;
+  background: white;
+  padding: 0 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.billing-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.billing-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.9rem;
+  background: white;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.billing-kpi-card span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.billing-kpi-card strong {
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #111827;
+}
+
+.billing-kpi-card small {
+  font-size: 0.7rem;
+  color: #9ca3af;
+}
+
+.billing-kpi-primary {
+  border-color: #bfdbfe;
+  background: linear-gradient(180deg, #eff6ff, #ffffff);
+}
+
+.billing-kpi-primary strong {
+  color: #1e40af;
+}
+
+.billing-kpi-amber strong {
+  color: #d97706;
+}
+
+.billing-kpi-danger strong {
+  color: #dc2626;
+}
+
+.billing-panel {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.9rem;
+  background: white;
+  padding: 1.25rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.billing-table-wrap {
+  overflow-x: auto;
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.billing-table th {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 0.65rem;
+  text-align: left;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.billing-table td {
+  border-bottom: 1px solid #f3f4f6;
+  padding: 0.85rem 0.65rem;
+  vertical-align: middle;
+}
+
+.billing-discount-pill {
+  display: inline-block;
+  border-radius: 999px;
+  background: #fffbeb;
+  padding: 0.25rem 0.55rem;
+  color: #b45309;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.billing-status-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.billing-status-paid {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.billing-status-refunded {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.billing-coupons-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.billing-coupon-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.billing-coupon-form h3,
+.billing-coupons-list h3 {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.coupon-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.8rem;
+  background: #f9fafb;
+  padding: 1rem;
+}
+
+.coupon-inactive {
+  opacity: 0.55;
+}
+
+.coupon-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coupon-code-badge {
+  border-radius: 0.45rem;
+  background: #1e40af;
+  padding: 0.25rem 0.55rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.coupon-card p {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.coupon-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+}
+
+.refund-confirm-btn {
+  background: #dc2626;
+}
+
+.refund-confirm-btn:hover {
+  background: #b91c1c;
+}
+
+/* Modal de Factura Imprimible */
+.invoice-print-modal {
+  width: min(100%, 460px);
+}
+
+.invoice-modal-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.85rem 1.25rem;
+}
+
+.invoice-toolbar-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.invoice-sheet {
+  padding: 1.5rem;
+  background: white;
+  color: #111827;
+}
+
+.invoice-sheet-header {
+  text-align: center;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 1rem;
+}
+
+.invoice-brand-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: #1e40af;
+}
+
+.invoice-brand-sub {
+  font-size: 0.72rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+}
+
+.invoice-number-badge {
+  display: inline-block;
+  margin-top: 0.65rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  padding: 0.3rem 0.75rem;
+  color: #1e40af;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.invoice-refunded-stamp {
+  margin-top: 0.5rem;
+  display: inline-block;
+  border: 2px solid #dc2626;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  color: #dc2626;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.invoice-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  padding: 1rem 0;
+  border-bottom: 1px dashed #cbd5e1;
+  font-size: 0.74rem;
+}
+
+.invoice-meta-grid > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.invoice-meta-grid span {
+  color: #6b7280;
+  font-size: 0.65rem;
+}
+
+.invoice-items-table {
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.invoice-items-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #6b7280;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.invoice-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  padding: 0.3rem 0;
+}
+
+.invoice-item-row small {
+  color: #6b7280;
+}
+
+.invoice-totals-box {
+  padding-top: 0.85rem;
+}
+
+.invoice-total-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.76rem;
+  color: #4b5563;
+  margin-bottom: 0.3rem;
+}
+
+.invoice-discount-line {
+  color: #059669;
+  font-weight: 700;
+}
+
+.invoice-grand-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.invoice-refund-note {
+  margin-top: 0.85rem;
+  border-radius: 0.5rem;
+  background: #fef2f2;
+  padding: 0.6rem 0.75rem;
+  color: #b91c1c;
+  font-size: 0.72rem;
+}
+
+.invoice-sheet-footer {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.68rem;
+  color: #6b7280;
+}
+
+@media (max-width: 980px) {
+  .billing-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .billing-coupons-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 680px) {
+  .billing-kpi-grid,
+  .coupons-grid,
+  .modal-billing-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilos dedicados para impresión limpia de factura */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-invoice,
+  #printable-invoice * {
+    visibility: visible;
+  }
+
+  #printable-invoice {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 380px;
+    padding: 12px;
+    background: white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ============================================================================
+   Estilos adicionales KDS: Estado Entregado y Filtros de Cola
+   ============================================================================ */
+.counter-done > span {
+  background: rgba(5, 150, 105, 0.18);
+  color: #34d399;
+}
+
+.ticket-done .ticket-status-strip {
+  background: #059669;
+}
+
+.status-done {
+  background: rgba(5, 150, 105, 0.18);
+  color: #34d399;
+}
+
+.ticket-done .ticket-items div::before {
+  background: #34d399;
+}
+
+.kds-filter-bar {
+  display: flex;
+  gap: 0.65rem;
+  max-width: 1440px;
+  margin: 0 auto 1.25rem;
+}
+
+.kds-filter-tab {
+  border: 1px solid #334155;
+  background: rgba(30, 41, 59, 0.72);
+  padding: 0 1.15rem;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+}
+
+.kds-filter-tab:hover {
+  border-color: #60a5fa;
+  color: white;
+}
+
+.kds-filter-tab-active {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: white;
+}

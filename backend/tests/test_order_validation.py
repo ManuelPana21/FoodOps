@@ -81,10 +81,11 @@ def test_order_create_fails_if_no_item_has_positive_quantity():
 # Pruebas de Integración con FastAPI TestClient (HTTP 422 y HTTP 201)
 # ==============================================================================
 
-def test_api_create_order_empty_items_returns_422(client):
+def test_api_create_order_empty_items_returns_422(client, waiter_headers):
     """La API debe retornar código 422 en formato JSON estándar cuando la lista de items está vacía."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 3",
             "serverId": 1,
@@ -101,10 +102,11 @@ def test_api_create_order_empty_items_returns_422(client):
     assert len(data["details"]) > 0
 
 
-def test_api_create_order_zero_quantity_returns_422(client):
+def test_api_create_order_zero_quantity_returns_422(client, waiter_headers):
     """La API debe retornar código 422 en formato JSON estándar cuando la cantidad es 0."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 3",
             "serverId": 1,
@@ -123,10 +125,11 @@ def test_api_create_order_zero_quantity_returns_422(client):
     assert any("quantity" in f or "items" in f for f in field_names)
 
 
-def test_api_create_order_negative_quantity_returns_422(client):
+def test_api_create_order_negative_quantity_returns_422(client, waiter_headers):
     """La API debe retornar código 422 en formato JSON estándar cuando la cantidad es negativa."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 3",
             "serverId": 1,
@@ -141,10 +144,11 @@ def test_api_create_order_negative_quantity_returns_422(client):
     assert data["code"] == 422
 
 
-def test_api_create_order_mixed_valid_and_invalid_quantity_fails(client):
+def test_api_create_order_mixed_valid_and_invalid_quantity_fails(client, waiter_headers):
     """Si un pedido tiene un item válido y otro con cantidad <= 0, debe fallar con 422."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 5",
             "serverId": 1,
@@ -160,10 +164,11 @@ def test_api_create_order_mixed_valid_and_invalid_quantity_fails(client):
     assert data["code"] == 422
 
 
-def test_api_create_order_blank_table_returns_422(client):
+def test_api_create_order_blank_table_returns_422(client, waiter_headers):
     """Un pedido con número de mesa en blanco debe fallar con 422."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "   ",
             "serverId": 1,
@@ -176,10 +181,11 @@ def test_api_create_order_blank_table_returns_422(client):
     assert data["code"] == 422
 
 
-def test_api_create_order_nonexistent_product_returns_404(client):
+def test_api_create_order_nonexistent_product_returns_404(client, waiter_headers):
     """Un pedido con un ID de producto inexistente debe retornar 404 estándar."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 8",
             "serverId": 1,
@@ -193,10 +199,11 @@ def test_api_create_order_nonexistent_product_returns_404(client):
     assert "999999" in data["message"]
 
 
-def test_api_create_order_nonexistent_server_returns_400(client):
+def test_api_create_order_nonexistent_server_returns_400(client, waiter_headers):
     """Un pedido con un ID de mesero no registrado debe retornar 400 estándar."""
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 8",
             "serverId": 999999,
@@ -209,11 +216,12 @@ def test_api_create_order_nonexistent_server_returns_400(client):
     assert data["code"] == 400
 
 
-def test_api_update_order_status_lifecycle(client):
+def test_api_update_order_status_lifecycle(client, waiter_headers, kitchen_headers):
     """Prueba el ciclo de vida de actualización de estado y validaciones asociadas."""
     # 1. Crear orden
     create_res = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa KDS",
             "serverId": 1,
@@ -226,6 +234,7 @@ def test_api_update_order_status_lifecycle(client):
     # 2. Actualizar estado a 'progress'
     patch_res = client.patch(
         f"/api/orders/{order_id}/status",
+        headers=kitchen_headers,
         json={"status": "progress"},
     )
     assert patch_res.status_code == 200
@@ -234,6 +243,7 @@ def test_api_update_order_status_lifecycle(client):
     # 3. Actualizar con estado inválido debe retornar 422
     invalid_patch = client.patch(
         f"/api/orders/{order_id}/status",
+        headers=kitchen_headers,
         json={"status": "invalid_status_value"},
     )
     assert invalid_patch.status_code == 422
@@ -243,6 +253,7 @@ def test_api_update_order_status_lifecycle(client):
     # 4. Actualizar orden inexistente debe retornar 404
     not_found_patch = client.patch(
         "/api/orders/888888/status",
+        headers=kitchen_headers,
         json={"status": "done"},
     )
     assert not_found_patch.status_code == 404
@@ -250,10 +261,10 @@ def test_api_update_order_status_lifecycle(client):
     assert not_found_patch.json()["code"] == 404
 
 
-def test_api_get_kds_queue_and_products(client):
+def test_api_get_kds_queue_and_products(client, waiter_headers):
     """Verifica que los endpoints de cola KDS y catálogo de productos respondan correctamente."""
     # Cola KDS
-    queue_res = client.get("/api/orders/queue")
+    queue_res = client.get("/api/orders/queue", headers=waiter_headers)
     assert queue_res.status_code == 200
     queue = queue_res.json()
     assert isinstance(queue, list)

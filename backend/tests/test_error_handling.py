@@ -12,7 +12,7 @@ Verifica que las respuestas para códigos 400, 404, 422 y 500 cumplan con el for
 import pytest
 
 
-def test_standard_error_response_400(client):
+def test_standard_error_response_400(client, waiter_headers):
     """Verifica respuesta estándar JSON en error 400 (Bad Request)."""
     # 1. Mediante endpoint de prueba
     response = client.get("/api/test/error-400")
@@ -28,6 +28,7 @@ def test_standard_error_response_400(client):
     # 2. Mediante orden con mesero inexistente en la base de datos
     bad_order = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "Mesa 99",
             "serverId": 99999,  # Mesero inexistente
@@ -41,7 +42,7 @@ def test_standard_error_response_400(client):
     assert "mesero" in bad_data["message"].lower()
 
 
-def test_standard_error_response_404(client):
+def test_standard_error_response_404(client, waiter_headers):
     """Verifica respuesta estándar JSON en error 404 (Not Found)."""
     # 1. Mediante ruta inexistente
     response = client.get("/api/ruta-que-no-existe-en-el-sistema")
@@ -55,7 +56,7 @@ def test_standard_error_response_404(client):
     assert data["detail"] is not None
 
     # 2. Mediante ID de pedido inexistente
-    order_404 = client.get("/api/orders/999999")
+    order_404 = client.get("/api/orders/999999", headers=waiter_headers)
     assert order_404.status_code == 404
     data_404 = order_404.json()
     assert data_404["status"] == "error"
@@ -63,11 +64,12 @@ def test_standard_error_response_404(client):
     assert "999999" in data_404["message"]
 
 
-def test_standard_error_response_422(client):
+def test_standard_error_response_422(client, waiter_headers):
     """Verifica respuesta estándar JSON en error 422 (Unprocessable Entity)."""
     # Envío de un payload con datos que no cumplen los tipos ni restricciones
     response = client.post(
         "/api/orders",
+        headers=waiter_headers,
         json={
             "tableNumber": "",  # Mesa vacía
             "serverId": "invalido",  # Debe ser entero
@@ -105,7 +107,7 @@ def test_standard_error_response_500(client):
     assert data["detail"] is not None
 
 
-def test_standard_error_structure_consistency(client):
+def test_standard_error_structure_consistency(client, waiter_headers):
     """Garantiza la consistencia estructural idéntica en las 4 respuestas de error."""
     endpoints_to_test = [
         ("/api/test/error-400", 400),
@@ -115,7 +117,7 @@ def test_standard_error_structure_consistency(client):
     ]
 
     for path, expected_code in endpoints_to_test:
-        res = client.get(path)
+        res = client.get(path, headers=waiter_headers)
         assert res.status_code == expected_code
         body = res.json()
         assert set(body.keys()) == {"status", "code", "message", "detail", "details"}
